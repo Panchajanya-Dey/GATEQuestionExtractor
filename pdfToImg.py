@@ -45,8 +45,8 @@ def find_question_tops(page):
         if QUESTION_RE.match(first_word) and not (third_word and QUESTION_RE.match(third_word)):
             # take the minimum y0 of the words in the line as the line's top
             line_y0 = min(it[3] for it in items)
-            tops.append(line_y0)
-    tops = sorted(set(tops))
+            tops.append((line_y0, first_word))
+    tops.sort(key = lambda i: i[0])
     return tops
 
 def ensure_dir(path):
@@ -86,20 +86,21 @@ def split_questions_from_pdf(pdf_path, out_dir=None, zoom=2.0, padding_pts=4.0):
         page_height = page.rect.y1
         regions = []
         for i, top in enumerate(tops):
-            top_clamped = max(0.0, top - padding_pts)
+            top_clamped = max(0.0, top[0] - padding_pts)
             if i + 1 < len(tops):
-                bottom = tops[i + 1] - padding_pts
+                bottom = tops[i + 1][0] - padding_pts
             else:
                 bottom = page_height - padding_pts
             bottom_clamped = min(page_height, bottom)
             if bottom_clamped > top_clamped + 1e-3:
-                regions.append((top_clamped, bottom_clamped))
+                regions.append((top[1], top_clamped, bottom_clamped))
 
         # render each region
-        for qi, (top, bottom) in enumerate(regions, start=1):
+        for qi, top, bottom in regions:
             clip = fitz.Rect(0.0, top, page.rect.width, bottom)
             pix = page.get_pixmap(matrix=mat, clip=clip, alpha=False)
-            outname = os.path.join(out_dir, f"p{pno+1:03d}_q{qi:03d}.png")
+            # outname = os.path.join(out_dir, f"p{pno+1:03d}_q{qi:03d}.png")
+            outname = os.path.join(out_dir, f"{qi}.png")
             pix.save(outname)
             saved += 1
 
