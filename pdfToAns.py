@@ -16,10 +16,10 @@ def convert_pdf_to_csv(input_pdf, output_csv=None):
 
         tabula.convert_into(input_pdf, output_csv, output_format="csv", pages='all')
 
-        print(f"✅ Successfully saved to {output_csv}")
+        print(f"Successfully saved to {output_csv}")
 
     except Exception as e:
-        print(f"❌ An error occurred: {e}")
+        print(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":

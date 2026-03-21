@@ -43,7 +43,7 @@ def parse_answer(row):
             question["range"] = [val, val]
 
     else:
-        print(f"⚠️ Unknown type for Q{q_no}: {q_type}")
+        print(f"Unknown type for Q{q_no}: {q_type}")
 
     return question
 
@@ -52,7 +52,7 @@ def main():
     questions = []
 
     if not os.path.exists(ANS_FILE):
-        print("❌ Answer file not found!")
+        print("Answer file not found!")
         return
 
     with open(ANS_FILE, newline="", encoding="utf-8") as csvfile:
@@ -63,7 +63,7 @@ def main():
                 q = parse_answer(row)
                 questions.append(q)
             except Exception as e:
-                print(f"⚠️ Skipping row due to error: {e}")
+                print(f"Skipping row due to error: {e}")
 
     # Sort by question ID (important)
     questions.sort(key=lambda x: x["id"])
@@ -72,8 +72,8 @@ def main():
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(questions, f, indent=4)
 
-    print(f"✅ Quiz JSON generated: {OUTPUT_FILE}")
-    print(f"📊 Total questions: {len(questions)}")
+    print(f"Quiz JSON generated: {OUTPUT_FILE}")
+    print(f"Total questions: {len(questions)}")
 
 
 if __name__ == "__main__":
